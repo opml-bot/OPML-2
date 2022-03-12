@@ -27,7 +27,6 @@ class TaskManager:
         self.user = user
         self.status = user.authorization()
         self.handlers = Handlers(vk_api_method, db, user)
-        # возможно есть смысл добавить аттрибут task
 
     def manage(self, text: str) -> Response:
         """
