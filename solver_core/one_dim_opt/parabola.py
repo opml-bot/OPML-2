@@ -56,7 +56,7 @@ class Parabola:
             self.x_ = self.count_new_x()
             self.y_ = self.func(self.x_)
             if self.print_interm:
-                answer += f"iter: {i+1} x: {self.x_:.12f} y: {self.y_:.12f}\n"
+                answer += f"iter: {i+1:<4d} x: {self.x_:.12f} y: {self.y_:.12f}\n"
             if self.save_iters_df:
                 iterations_df = iterations_df.append({'x': self.x_, 'y': self.y_}, ignore_index=True)
             if i == 0:
@@ -68,6 +68,8 @@ class Parabola:
                 story = self.x_
 
             intervals = self.new_interval()
+            if intervals == False:
+                return 'Похоже, на отрезке нет минимума'
             self.x = intervals[0]
             self.y = intervals[1]
         else:
@@ -108,10 +110,11 @@ class Parabola:
                 return [self.x[1], self.x_, self.x[2]], [self.y[1], self.y_, self.y[2]]
             else:
                 return [self.x[0], self.x[1], self.x_], [self.y[0], self.y[1], self.y_]
+        return False
 
 
 if __name__ == "__main__":
     f = lambda x: -5*x**5 + 4*x**4 - 12*x**3 + 11*x**2 - 2*x + 1 # -0.5 0.5
-    task = Parabola(f, [-0.5, 0.5], print_interim=True, save_iters_df=True)
+    task = Parabola(f, (-0.5, 0.5), print_interim=True, save_iters_df=True)
     res = task.solve()
     print(res)
