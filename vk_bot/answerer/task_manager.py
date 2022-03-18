@@ -62,9 +62,17 @@ class TaskManager:
             if text == 'Поиск экстремума':
                 self.user.update_status('extremum')
                 return ExtremumManager(self.vk_api_method, self.db, self.user).manage(text)
+            if text == 'Одномерная оптимизация':
+                self.user.update_status('onedimopt')
+                # TODO: дополнить после создания модуля OneDimOptManager
+                pass
             if text == 'Обо мне':
                 return self.handlers.about_me()
             return self.handlers.click_button()
 
         if self.status == 'extremum':
             return ExtremumManager(self.vk_api_method, self.db, self.user).manage(text)
+
+        if self.status == 'onedimopt':
+            # TODO: дополнить после создания модуля OneDimOptManager
+            pass
