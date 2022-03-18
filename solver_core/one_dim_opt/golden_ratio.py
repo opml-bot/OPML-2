@@ -4,32 +4,32 @@ from numbers import Real, Integral
 
 class GoldenRatio:
     """
-      Класс для решения задачи поиска минимума одномерной функции на отрезке методом парабол.
-      Parameters
-      ----------
-      func : Callble
-          Функция, у которой надо искать минимум.
-      interval_x : tuple
-          Кортеж с двумя значениями типа float, которые задают ограничения для отрезка.
-      acc: Optional[float] = 10**-5
-          Точность оптимизации. Выражается как разница иксов на n и n-1 итерации. \
-          По умолчанию 10**-5
-      max_iteration: Optional[int] = 500
-          Максимально допустимое количество итераций. По умолчанию 500.
-      print_interim: Optional[bool] = False
-          Флаг, нужно ли сохранять информацию об итерациях. Информация записывается в \
-          строку с ответом.
-      save_iters_df: Optional[bool] = False
-          Флаг, нужно ли сохранять информацию об итерациях в pandas.DataFrame
-      """
+    Класс для решения задачи поиска минимума одномерной функции на отрезке методом парабол.
+
+    Parameters
+    ----------
+    func : Callable
+      Функция, у которой надо искать минимум.
+    interval_x : tuple
+      Кортеж с двумя значениями типа float, которые задают ограничения для отрезка.
+    acc: Optional[float] = 10**-5
+      Точность оптимизации. Выражается как разница иксов на n и n-1 итерации. \
+      По умолчанию 10**-5
+    max_iteration: Optional[int] = 500
+      Максимально допустимое количество итераций. По умолчанию 500.
+    print_interim: Optional[bool] = False
+      Флаг, нужно ли сохранять информацию об итерациях. Информация записывается в \
+      строку с ответом.
+    save_iters_df: Optional[bool] = False
+      Флаг, нужно ли сохранять информацию об итерациях в pandas.DataFrame
+    """
 
     def __init__(self, func: Callable[[Real], Real],
                  interval_x: Tuple,
                  acc: Optional[Real] = 10 ** -5,
                  max_iteration: Optional[Integral] = 500,
                  print_interim: Optional[bool] = False,
-                 save_iters_df: Optional[bool] = False) -> None:
-
+                 save_iters_df: Optional[bool] = False):
         self.func = func
         self.interval_x = interval_x
         self.acc = acc
@@ -37,15 +37,16 @@ class GoldenRatio:
         self.print_interm = print_interim
         self.save_iters_df = save_iters_df
 
-    def solve(self):
+    def solve(self) -> str:
         """
         Метод решает задачу c помощью золотого сечения
         Returns
         -------
-        ans: str
+        str
             Строка с ответом и причиной остановки. Содержит информацию об итерациях при \
             print_interm=True
         """
+
         phi: Real = (1 + 5 ** 0.5) / 2
 
         a: Real = self.interval_x[0]
@@ -74,7 +75,7 @@ class GoldenRatio:
 
 
 if __name__ == "__main__":
-    f = lambda x: -5*x**5 + 4*x**4 - 12*x**3 + 11*x**2 - 2*x + 1 # -0.5 0.5
-    task = GoldenRatio(f, [-0.5, 0.5], print_interim=True, save_iters_df=True)
+    f = lambda x: -5 * x**5 + 4 * x**4 - 12 * x**3 + 11 * x**2 - 2 * x + 1  # -0.5 0.5
+    task = GoldenRatio(f, (-0.5, 0.5), print_interim=True, save_iters_df=True)
     res = task.solve()
     print(res)
