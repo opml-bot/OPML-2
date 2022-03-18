@@ -48,5 +48,7 @@ class Keyboards:
 
         self.keyboard.add_button('Поиск экстремума', VkKeyboardColor.POSITIVE)
         self.keyboard.add_line()
+        self.keyboard.add_button('Одномерная оптимизация', VkKeyboardColor.PRIMARY)
+        self.keyboard.add_line()
         self.keyboard.add_button('Обо мне', VkKeyboardColor.SECONDARY)
         return self.keyboard
