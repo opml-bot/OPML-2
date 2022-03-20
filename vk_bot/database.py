@@ -24,7 +24,7 @@ class BotDatabase:
             Объект соединения с базой данных.
         """
 
-        table_creation_queries = [Create.USERS, Create.EXTREMES]
+        table_creation_queries = [Create.USERS, Create.EXTREMES, Create.ONEDIMOPT]
         try:
             connection = sqlite3.connect(self.name_db)
             for query in table_creation_queries:
