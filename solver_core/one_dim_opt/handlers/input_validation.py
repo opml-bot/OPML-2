@@ -112,6 +112,27 @@ def check_float(value: str) -> float:
     return value
 
 
+def check_int(value: str) -> int:
+    """
+    Проверяет введеное значение на корректность и на наличие инъекций, а затем
+    конвертирует в int, если это возможно.
+
+    Parameters:
+    ------------
+    values: str
+        строка в которой содержится выражение
+
+    Returns:
+    -------
+    int
+        значение переведенное из строки в int
+    """
+    if value.find('^') != -1:
+        value = value.replace('^', '**')
+    value = int(parse_expr(value))
+    return value
+
+
 if __name__ == '__main__':
     print(check_limits("pi/2 pi/2"))
     print(check_expression('x+log(2, 2)'))
