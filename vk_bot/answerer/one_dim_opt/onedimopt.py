@@ -59,7 +59,7 @@ class OneDimOpt:
 
         Parameters
         ----------
-        step: str
+        step : str
             Новый шаг, который будет записан в базу данных.
         """
 
@@ -71,7 +71,7 @@ class OneDimOpt:
 
         Parameters
         ----------
-        task_type: str
+        task_type : str
             Тип задачи, который будет записан в базу данных.
         """
 
@@ -83,7 +83,7 @@ class OneDimOpt:
 
         Parameters
         ----------
-        func: str
+        func : str
             Функция, которая будет записана в базу данных.
         """
 
@@ -95,7 +95,7 @@ class OneDimOpt:
 
         Parameters
         ----------
-        acc: float
+        acc : float
             Целевая точность для алгоритма, которая будет записана в базу данных.
         """
 
@@ -107,7 +107,7 @@ class OneDimOpt:
 
         Parameters
         ----------
-        max_iter: int
+        max_iter : int
             Максимальное количество итераций алгоритма, которое будет записано в базу данных.
         """
 
@@ -119,7 +119,7 @@ class OneDimOpt:
 
         Parameters
         ----------
-        print_interim: int
+        print_interim : int
             Флаг вывода промежуточных результатов, который будет записан в базу данных.
         """
 
