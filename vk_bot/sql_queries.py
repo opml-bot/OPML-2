@@ -23,6 +23,16 @@ class Create(NamedTuple):
                 "                  restr INTEGER, \n"
                 "                  FOREIGN KEY(user_id) REFERENCES users(user_id))")
 
+    ONEDIMOPT = ("CREATE TABLE onedimopt (\n"
+                 "                  user_id INTEGER PRIMARY KEY, \n"
+                 "                  step TEXT DEFAULT 'start', \n"
+                 "                  type TEXT, \n"
+                 "                  func TEXT, \n"
+                 "                  acc REAL, \n"
+                 "                  max_iter INTEGER, \n"
+                 "                  print_interim INTEGER, \n"
+                 "                  FOREIGN KEY(user_id) REFERENCES users(user_id))")
+
 
 class Insert(NamedTuple):
     """
@@ -31,6 +41,7 @@ class Insert(NamedTuple):
 
     USERS = "INSERT INTO users(user_id, first_name, last_name) VALUES (?, ?, ?)"
     EXTREMES = "INSERT INTO extremes(user_id) VALUES (?)"
+    ONEDIMOPT = "INSERT INTO onedimopt(user_id) VALUES (?)"
 
 
 class Select(NamedTuple):
@@ -51,6 +62,11 @@ class Select(NamedTuple):
     EXTREMES_RESTR_WITH_INT = "SELECT vars, func, g_func, interval_x, interval_y FROM extremes WHERE user_id = ?"
     EXTREMES_RESTR_WITHOUT_INT = "SELECT vars, func, g_func FROM extremes WHERE user_id = ? "
 
+    ONEDIMOPT_STEP = "SELECT step FROM onedimopt WHERE user_id = ?"
+    ONEDIMOPT_TYPE = "SELECT type FROM onedimopt WHERE user_id = ?"
+    ONEDIMOPT_PRINT_INTERIM = "SELECT print_interim FROM onedimopt WHERE user_id = ?"
+    ONEDIMOPT_ALL = "SELECT * FROM onedimopt WHERE user_id = ?"
+
 
 class Update(NamedTuple):
     """
@@ -67,4 +83,11 @@ class Update(NamedTuple):
     EXTREMES_RESTR = "UPDATE extremes SET restr = ? WHERE user_id = ?"
     EXTREMES_INTERVAL_X = "UPDATE extremes SET interval_x = ? WHERE user_id = ?"
     EXTREMES_INTERVAL_Y = "UPDATE extremes SET interval_y = ? WHERE user_id = ?"
+
+    ONEDIMOPT_STEP = "UPDATE onedimopt SET step = ? WHERE user_id = ?"
+    ONEDIMOPT_TYPE = "UPDATE onedimopt SET type = ? WHERE user_id = ?"
+    ONEDIMOPT_FUNC = "UPDATE onedimopt SET func = ? WHERE user_id = ?"
+    ONEDIMOPT_ACC = "UPDATE onedimopt SET acc = ? WHERE user_id = ?"
+    ONEDIMOPT_MAX_ITER = "UPDATE onedimopt SET max_iter = ? WHERE user_id = ?"
+    ONEDIMOPT_PRINT_INTERIM = "UPDATE onedimopt SET print_interim = ? WHERE user_id = ?"
 
