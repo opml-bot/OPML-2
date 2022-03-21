@@ -64,17 +64,32 @@ class BFGS:
         h_k = np.eye(len(x_k))
         grad_f_k = gradient(self.func, x_k).reshape(-1, 1)
 
+        answer = ''
+        if self.save_iters_df:
+            iterations_df = pd.DataFrame(columns=['x', 'y'])
+            
         for k in range(self.max_iteration):
-
+            f_k = self.func(x_k)
+            if self.print_interm:
+                answer += f"iter: {k + 1:<4d} x: {x_k:.12f} y: {f_k:.12f}\n"
+            if self.save_iters_df:
+                iterations_df = iterations_df.append({'x': x_k, 'y': f_k}, ignore_index=True)
+                
             if norm2(grad_f_k) < self.acc:
-                return x_k, '0'
+                self.x_ = x_k
+                self.f_ = f_k
+                answer = answer + f"Достигнута заданная точность. \nПолученная точка: {(self.x_, self.y_)}"
+                return answer
 
             p_k = -h_k @ grad_f_k
 
             alpha_k = line_search(self.func, lambda x: gradient(self.func, x).reshape(1, -1), x_k, p_k,
                                   c1=self.c1, c2=self.c2, maxiter=self.max_iteration)[0]
             if alpha_k is None:
-                return 'code 2. Method cannot find solution'
+                self.x_ = x_k
+                self.f_ = f_k
+                answer = answer + f"Константа alpha не находится. Метод не сошелся. \nПолученная точка: {(self.x_, self.y_)}"
+                return answer
 
             x_k_plus1 = x_k + alpha_k * p_k
             grad_f_k_plus1 = gradient(self.func, x_k_plus1)
@@ -84,8 +99,11 @@ class BFGS:
             h_k = calc_h_new(h_k, s_k, y_k)
             grad_f_k = grad_f_k_plus1
             x_k = x_k_plus1
-
-        return x_k, '1'
+        
+        self.x_ = x_k
+        self.f_ = f_k
+        answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_, self.y_)}"
+        return answer
 
 
 def gradient(func: Callable,
