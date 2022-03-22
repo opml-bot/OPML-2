@@ -14,8 +14,8 @@ def prepare_func(func: str) -> Callable:
 
     Returns:
     -------
-    function
-        питоновская функция
+    Callable
+        Питоновская функция
     """
 
     x = Symbol('x')
@@ -36,7 +36,7 @@ def prepare_limits(limits: str) -> tuple:
     Returns:
     -------
     tuple
-        одномерный кортеж длины 2 с значениями типа float
+        Кортеж из 2-х элементов со значениями типа float
     """
     limits = limits.split()
     for i in range(len(limits)):
