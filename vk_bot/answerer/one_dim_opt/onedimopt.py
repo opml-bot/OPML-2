@@ -89,6 +89,18 @@ class OneDimOpt:
 
         self.db.update(Update.ONEDIMOPT_FUNC, (func, self.user_id))
 
+    def update_interval_x(self, interval_x: str):
+        """
+        Изменение интервала X для функции в базе данных.
+
+        Parameters
+        ----------
+        interval_x : str
+            Интервал X для функции, который будет записан в базу данных.
+        """
+
+        self.db.update(Update.ONEDIMOPT_INTERVAL_X, (interval_x, self.user_id))
+
     def update_acc(self, acc: float):
         """
         Изменение целевой точности для алгоритма в базе данных.
