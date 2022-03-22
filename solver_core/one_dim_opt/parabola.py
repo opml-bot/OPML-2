@@ -3,6 +3,8 @@ from __future__ import annotations
 from typing import Optional, Callable, Any
 import numpy as np
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
 
 class Parabola:
@@ -35,13 +37,15 @@ class Parabola:
                  acc: Optional[float] = 10 ** -5,
                  max_iteration: Optional[int] = 500,
                  print_interim: Optional[bool] = False,
-                 save_iters_df: Optional[bool] = False):
+                 save_iters_df: Optional[bool] = False,
+                 draw_flag: Optional[bool] = False):
         self.func = func
         self.interval_x = interval_x
         self.acc = acc
         self.max_iteration = max_iteration
         self.print_interm = print_interim
         self.save_iters_df = save_iters_df
+        self.draw_flag = draw_flag
 
     def solve(self) -> str:
         """
@@ -64,6 +68,8 @@ class Parabola:
         answer = ''
         if self.save_iters_df:
             iterations_df = pd.DataFrame(columns=['x', 'y'])
+        if self.draw_flag:
+            draw_df = pd.DataFrame(columns=['x', 'y', 'iter', 'size', 'color'])
 
         for i in range(self.max_iteration):
             last_x = self.x_
@@ -75,6 +81,9 @@ class Parabola:
                 answer += f"iter: {i + 1:<4d} x: {self.x_:.12f} y: {self.y_:.12f}\n"
             if self.save_iters_df:
                 iterations_df = iterations_df.append({'x': self.x_, 'y': self.y_}, ignore_index=True)
+            if self.draw_flag:
+                d = pd.DataFrame({'x': self.x, 'y': self.y, 'iter': [i]*3, 'size': [10.0]*3, 'color': ['green', 'purple', 'blue']})
+                draw_df = draw_df.append(d, ignore_index=True)
             if i == 0:
                 story = self.x_
             else:
@@ -82,7 +91,6 @@ class Parabola:
                     answer = answer + f"Достигнута заданная точность. \nПолученная точка: {(self.x_, self.y_)}"
                     break
                 story = self.x_
-
             intervals = self.new_interval()
             if not intervals:
                 return 'Похоже, на отрезке нет минимума'
@@ -91,6 +99,8 @@ class Parabola:
         else:
             answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_, self.y_)}"
         if self.save_iters_df:
+            if self.draw_flag:
+                self.draw(draw_df)
             return answer, iterations_df
         else:
             return answer
@@ -135,9 +145,22 @@ class Parabola:
                 return [self.x[0], self.x[1], self.x_], [self.y[0], self.y[1], self.y_]
         return False
 
+    def draw(self, df):
+        fig = px.scatter(df, x='x', y='y', animation_frame='iter',
+                         range_x=[min(df['x']) - (max(df['x']) - min(df['x'])) * 0.15,
+                                  max(df['x']) + (max(df['x']) - min(df['x'])) * 0.15],
+                        range_y=[min(df['y']) - (max(df['y']) - min(df['y'])) * 0.15,
+                                  max(df['y']) + (max(df['y']) - min(df['y'])) * 0.15],
+                         size='size', color='color')
+        func_x = np.linspace(self.interval_x[0], self.interval_x[1], 1000)
+        func_y = [self.func(i) for i in func_x]
+        fig.add_trace(go.Scatter(x=func_x, y=func_y))
+        fig.update_layout(showlegend=False)
+        fig.show()
+
 
 if __name__ == "__main__":
     f = lambda x: -5 * x ** 5 + 4 * x ** 4 - 12 * x ** 3 + 11 * x ** 2 - 2 * x + 1  # -0.5 0.5
-    task = Parabola(f, (-0.5, 0.5), print_interim=False, save_iters_df=True)
+    task = Parabola(f, (-0.5, 0.5), print_interim=False, save_iters_df=True, draw_flag=True)
     res = task.solve()
     print(res[1])
