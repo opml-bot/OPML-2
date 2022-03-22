@@ -29,7 +29,7 @@ class BFGS:
             строку с ответом.
         save_iters_df: Optional[bool] = False
             Флаг, нужно ли сохранять информацию об итерациях в pandas.DataFrame
-        """
+    """
 
     def __init__(self, func: Callable,
                  x0: np.ndarray,
@@ -49,6 +49,8 @@ class BFGS:
         self.max_iteration = max_iteration
         self.print_interim = print_interim
         self.save_iters_df = save_iters_df
+        self.x_ = 0
+        self.y_ = 0
 
     def solve(self):
         """
@@ -58,27 +60,26 @@ class BFGS:
         ans: str
             Строка с ответом в виде сообщения о причине остановки алгоримта
             (достигнута точность или максимальное число итераций)
-            и ифномация об итерациях, есди флаг print_interim = True.
+            и информация об итерациях, есди флаг print_interim = True.
         """
         x_k = np.array(self.x0).reshape(-1, 1)
-        h_k = np.eye(len(x_k))
+        h_k = np.eye(len(x_k)) * self.acc ** 0.5
         grad_f_k = gradient(self.func, x_k).reshape(-1, 1)
+        f_k = self.func(x_k)
 
         answer = ''
-        if self.save_iters_df:
-            iterations_df = pd.DataFrame(columns=['x', 'y'])
+        iterations_df = pd.DataFrame(columns=['x', 'y'])
             
         for k in range(self.max_iteration):
-            f_k = self.func(x_k)
-            if self.print_interm:
-                answer += f"iter: {k + 1:<4d} x: {x_k:.12f} y: {f_k:.12f}\n"
+            if self.print_interim:
+                answer += f"iter: {k + 1}\tx: {x_k[0, 0]:.12f}\ty: {f_k[0]:.12f}\n"
             if self.save_iters_df:
                 iterations_df = iterations_df.append({'x': x_k, 'y': f_k}, ignore_index=True)
                 
             if norm2(grad_f_k) < self.acc:
-                self.x_ = x_k
-                self.f_ = f_k
-                answer = answer + f"Достигнута заданная точность. \nПолученная точка: {(self.x_, self.y_)}"
+                self.x_ = x_k.reshape(-1)
+                self.y_ = f_k.reshape(-1)
+                answer = answer + f"Достигнута заданная точность. \nПолученная точка: {(self.x_[0], self.y_[0])}"
                 return answer
 
             p_k = -h_k @ grad_f_k
@@ -86,9 +87,9 @@ class BFGS:
             alpha_k = line_search(self.func, lambda x: gradient(self.func, x).reshape(1, -1), x_k, p_k,
                                   c1=self.c1, c2=self.c2, maxiter=self.max_iteration)[0]
             if alpha_k is None:
-                self.x_ = x_k
-                self.f_ = f_k
-                answer = answer + f"Константа alpha не находится. Метод не сошелся. \nПолученная точка: {(self.x_, self.y_)}"
+                self.x_ = x_k.reshape(-1)
+                self.y_ = f_k.reshape(-1)
+                answer += f"Константа alpha не находится. Метод не сошелся. \nПолученная точка: {(self.x_[0], self.y_[0])}"
                 return answer
 
             x_k_plus1 = x_k + alpha_k * p_k
@@ -99,10 +100,11 @@ class BFGS:
             h_k = calc_h_new(h_k, s_k, y_k)
             grad_f_k = grad_f_k_plus1
             x_k = x_k_plus1
-        
-        self.x_ = x_k
-        self.f_ = f_k
-        answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_, self.y_)}"
+            f_k = self.func(x_k)
+            self.x_ = x_k.reshape(-1)
+            self.y_ = f_k.reshape(-1)
+
+        answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_[0], self.y_[0])}"
         return answer
 
 
@@ -202,6 +204,6 @@ if __name__ == '__main__':
     funcs = [func1, func2, func3]
 
     for j in range(3):
-        x_solve = BFGS(funcs[j], 0, max_iteration=100, acc=10 ** -5, print_interim=True)
+        x_solve = BFGS(funcs[j], 3, max_iteration=100, acc=10 ** -5, print_interim=True)
         c = x_solve.solve()
         print(c)
