@@ -5,7 +5,7 @@ import re
 from .parabola import Parabola
 from .brandt import Brandt
 from .golden_ratio import GoldenRatio
-from .time import time
+from time import time
 
 
 def get_point(s):
