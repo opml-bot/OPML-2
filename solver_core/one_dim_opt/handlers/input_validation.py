@@ -2,7 +2,7 @@ from typing import Optional
 from sympy.parsing.sympy_parser import parse_expr
 from sympy import sympify, exp
 
-ALLOWED_OPERATIONS = ['log', 'ln', 'factorial', 'sin', 'cos', 'tan', 'cot', 'pi', 'exp', 'sqrt', 'root']
+ALLOWED_OPERATIONS = ['log', 'ln', 'factorial', 'sin', 'cos', 'tan', 'cot', 'pi', 'exp', 'sqrt', 'root', 'abs']
 
 
 def check_expression(expression: str) -> str:
