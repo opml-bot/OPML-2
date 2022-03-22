@@ -156,7 +156,7 @@ class Parabola:
         func_y = [self.func(i) for i in func_x]
         fig.add_trace(go.Scatter(x=func_x, y=func_y))
         fig.update_layout(showlegend=False)
-        fig.show()
+        return fig
 
 
 if __name__ == "__main__":
