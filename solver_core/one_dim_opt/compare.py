@@ -89,7 +89,8 @@ def compare_alg(function, limits, acc=10**-5, max_iter=100):
     all_algs_info: pandas.DataFrame
         Датафрейм со статисткой работы алгоритмов
     """
-
+    
+    
     all_algs_info = pd.DataFrame(columns=['Алгоритм', "x", 'y', "Время работы"])
     algs = [Parabola, GoldenRatio, Brandt]
     for i in algs:
