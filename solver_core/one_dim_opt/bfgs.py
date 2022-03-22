@@ -70,7 +70,7 @@ class BFGS:
             
         for k in range(self.max_iteration):
             f_k = self.func(x_k)
-            if self.print_interm:
+            if self.print_interim:
                 answer += f"iter: {k + 1:<4d} x: {x_k:.12f} y: {f_k:.12f}\n"
             if self.save_iters_df:
                 iterations_df = iterations_df.append({'x': x_k, 'y': f_k}, ignore_index=True)
