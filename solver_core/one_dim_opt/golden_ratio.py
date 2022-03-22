@@ -88,6 +88,11 @@ class GoldenRatio:
                 return answer, iters_df
             return answer
 
+    def draw(self):
+        """
+        Метод визуализирует работу алгоритма.
+        """
+
 
 if __name__ == "__main__":
     f = lambda x: -5 * x**5 + 4 * x**4 - 12 * x**3 + 11 * x**2 - 2 * x + 1  # -0.5 0.5
