@@ -155,9 +155,13 @@ class Brandt:
             if self.print_interim:
                 ans = ans + f'iter: {i+1:>4} x: {x0:>.10f} method: {method:^10s}\n'
         else:
-            ans += ans + f"Достигнуто максимальное число итераций. \nПолученная точка: {(x0, f0)}"
+            ans = ans + f"Достигнуто максимальное число итераций. \nПолученная точка: {(x0, f0)}"
+            if self.save_iters_df:
+                return ans, df
             return ans
-        ans += ans + f"Достигнута заданная точность. \nПолученная точка: {(x0, f0)}"
+        ans = ans + f"Достигнута заданная точность. \nПолученная точка: {(x0, f0)}"
+        if self.save_iters_df:
+            return ans, df
         return ans
 
 
@@ -168,10 +172,11 @@ if __name__ == '__main__':
     lims = [(-0.5, 0.5), (6, 9.9), (0, 2*np.pi)]
 
     j = 0
-    x = Brandt(func[j], lims[j], max_iteration=100, acc =10**-5, print_interim=True)
+    x = Brandt(func[j], lims[j], max_iteration=100, acc =10**-5, save_iters_df=True)
     c = x.solve()
     desired_width = 320
 
     pd.set_option('display.width', desired_width)
     pd.set_option('display.max_columns', 12)
-    print(c)
+    print(c[0])
+    print(c[1])

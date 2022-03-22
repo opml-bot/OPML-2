@@ -1,6 +1,8 @@
 from typing import Optional, Callable, Tuple
 from numbers import Real, Integral
 
+import pandas as pd
+
 
 class GoldenRatio:
     """
@@ -51,6 +53,8 @@ class GoldenRatio:
 
         a: Real = self.interval_x[0]
         b: Real = self.interval_x[1]
+        if self.save_iters_df:
+            iters_df = pd.DataFrame(columns=['x', 'y'])
         answer = ''
 
         for i in range(1, self.max_iteration):
@@ -65,17 +69,24 @@ class GoldenRatio:
             self.y_ = self.func(self.x_)
             if self.print_interm:
                 answer += f"iter: {i + 1} x: {self.x_:.12f} y: {self.y_:.12f}\n"
+            if self.save_iters_df:
+                iters_df = iters_df.append({'x': self.x_, 'y': self.y_}, ignore_index=True)
+
 
             if abs(x1 - x2) < self.acc:
                 answer += f"Достигнута заданная точность. \nПолученная точка: {(self.x_, self.y_)}"
+                if self.save_iters_df:
+                    return answer, iters_df
                 return answer
         else:
             answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_, self.y_)}"
+            if self.save_iters_df:
+                return answer, iters_df
             return answer
 
 
 if __name__ == "__main__":
     f = lambda x: -5 * x**5 + 4 * x**4 - 12 * x**3 + 11 * x**2 - 2 * x + 1  # -0.5 0.5
-    task = GoldenRatio(f, (-0.5, 0.5), print_interim=True, save_iters_df=True)
+    task = GoldenRatio(f, (-0.5, 0.5), print_interim=False, save_iters_df=True)
     res = task.solve()
-    print(res)
+    print(res[1])

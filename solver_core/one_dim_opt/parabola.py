@@ -84,7 +84,10 @@ class Parabola:
             self.y = intervals[1]
         else:
             answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_, self.y_)}"
-        return answer
+        if self.save_iters_df:
+            return answer, iterations_df
+        else:
+            return answer
 
     def count_new_x(self) -> float:
         """
@@ -129,6 +132,6 @@ class Parabola:
 
 if __name__ == "__main__":
     f = lambda x: -5 * x ** 5 + 4 * x ** 4 - 12 * x ** 3 + 11 * x ** 2 - 2 * x + 1  # -0.5 0.5
-    task = Parabola(f, (-0.5, 0.5), print_interim=True, save_iters_df=True)
+    task = Parabola(f, (-0.5, 0.5), print_interim=False, save_iters_df=True)
     res = task.solve()
-    print(res, )
+    print(res[1])

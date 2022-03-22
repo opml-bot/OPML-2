@@ -70,15 +70,17 @@ class BFGS:
             
         for k in range(self.max_iteration):
             f_k = self.func(x_k)
-            if self.print_interm:
-                answer += f"iter: {k + 1:<4d} x: {x_k:.12f} y: {f_k:.12f}\n"
+            if self.print_interim:
+                answer += f"iter: {k + 1:<4d} x: {float(x_k):.12f} y: {float(f_k):.12f}\n"
             if self.save_iters_df:
-                iterations_df = iterations_df.append({'x': x_k, 'y': f_k}, ignore_index=True)
+                iterations_df = iterations_df.append({'x': float(x_k), 'y': float(f_k)}, ignore_index=True)
                 
             if norm2(grad_f_k) < self.acc:
                 self.x_ = x_k
                 self.f_ = f_k
-                answer = answer + f"Достигнута заданная точность. \nПолученная точка: {(self.x_, self.y_)}"
+                answer = answer + f"Достигнута заданная точность. \nПолученная точка: {(float(self.x_), float(self.f_))}"
+                if self.save_iters_df:
+                    return answer, iterations_df
                 return answer
 
             p_k = -h_k @ grad_f_k
@@ -88,7 +90,9 @@ class BFGS:
             if alpha_k is None:
                 self.x_ = x_k
                 self.f_ = f_k
-                answer = answer + f"Константа alpha не находится. Метод не сошелся. \nПолученная точка: {(self.x_, self.y_)}"
+                answer = answer + f"Константа alpha не находится. Метод не сошелся. \nПолученная точка: {(float(self.x_), float(self.f_))}"
+                if self.save_iters_df:
+                    return answer, iterations_df
                 return answer
 
             x_k_plus1 = x_k + alpha_k * p_k
@@ -102,7 +106,9 @@ class BFGS:
         
         self.x_ = x_k
         self.f_ = f_k
-        answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_, self.y_)}"
+        answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(float(self.x_), foat(self.f_))}"
+        if self.save_iters_df:
+            return answer, iterations_df
         return answer
 
 
@@ -184,24 +190,26 @@ def calc_h_new(h: np.ndarray,
 if __name__ == '__main__':
     def func1(x):
         return - x[0] / (x[0] ** 2 + 2)
+    #
+    # def func2(x):
+    #     return (x[0] + 0.004) ** 5 - 2 * (x[0] + 0.004) ** 4
+    #
+    # def phi(alpha):
+    #     if alpha <= 1 - 0.01:
+    #         return 1 - alpha
+    #     elif 1 - 0.01 <= alpha <= 1 + 0.01:
+    #         return 1 / (2 * 0.01) * (alpha - 1) ** 2 + 0.01 / 2
+    #     else:
+    #         return alpha - 1
+    #
+    # def func3(x):
+    #     return phi(x[0]) + 2 * (1 - 0.01) / (39 * np.pi) * np.sin(39 * np.pi / 2 * x[0])
+    #
+    # funcs = [func1, func2, func3]
+    #
+    # for j in range(3):
+    #     x_solve = BFGS(funcs[j], 0, max_iteration=100, acc=10 ** -5, save_iters_df=True)
+    #     c = x_solve.solve()
+    c = BFGS(func1, 0, max_iteration=100, acc=10 ** -5, save_iters_df=True).solve()
+    print(c)
 
-    def func2(x):
-        return (x[0] + 0.004) ** 5 - 2 * (x[0] + 0.004) ** 4
-
-    def phi(alpha):
-        if alpha <= 1 - 0.01:
-            return 1 - alpha
-        elif 1 - 0.01 <= alpha <= 1 + 0.01:
-            return 1 / (2 * 0.01) * (alpha - 1) ** 2 + 0.01 / 2
-        else:
-            return alpha - 1
-
-    def func3(x):
-        return phi(x[0]) + 2 * (1 - 0.01) / (39 * np.pi) * np.sin(39 * np.pi / 2 * x[0])
-
-    funcs = [func1, func2, func3]
-
-    for j in range(3):
-        x_solve = BFGS(funcs[j], 0, max_iteration=100, acc=10 ** -5, print_interim=True)
-        c = x_solve.solve()
-        print(c)
