@@ -102,7 +102,7 @@ class BFGS:
         
         self.x_ = x_k
         self.f_ = f_k
-        answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_, self.y_)}"
+        answer = answer + f"Достигнуто максимальное число итераций. \nПолученная точка: {(self.x_, self.f_)}"
         return answer
 
 
