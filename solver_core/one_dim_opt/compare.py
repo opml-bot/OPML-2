@@ -2,10 +2,10 @@ import pandas as pd
 import numpy as np
 import re
 
-from solver_core.one_dim_opt.parabola import Parabola
-from solver_core.one_dim_opt.brandt import Brandt
-from solver_core.one_dim_opt.golden_ratio import GoldenRatio
-from time import time
+from .parabola import Parabola
+from .brandt import Brandt
+from .golden_ratio import GoldenRatio
+from .time import time
 
 
 def get_point(s):
