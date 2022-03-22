@@ -104,7 +104,7 @@ class Parabola:
         x = 1 / 2 * (self.x[0] + self.x[1] - a1 / a2)
         return x
 
-    def new_interval(self) -> tuple[list[float | Any], list[Any]] | bool:
+    def new_interval(self):  # -> tuple[list[float | Any], list[Any]] | bool:
         """
         Метод определяет новые точки для итерации.
 
@@ -128,7 +128,7 @@ class Parabola:
 
 
 if __name__ == "__main__":
-    f = lambda x: -5 * x**5 + 4 * x**4 - 12 * x**3 + 11 * x**2 - 2 * x + 1  # -0.5 0.5
+    f = lambda x: -5 * x ** 5 + 4 * x ** 4 - 12 * x ** 3 + 11 * x ** 2 - 2 * x + 1  # -0.5 0.5
     task = Parabola(f, (-0.5, 0.5), print_interim=True, save_iters_df=True)
     res = task.solve()
     print(res)
