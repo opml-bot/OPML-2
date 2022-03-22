@@ -28,6 +28,7 @@ class Create(NamedTuple):
                  "                  step TEXT DEFAULT 'start', \n"
                  "                  type TEXT, \n"
                  "                  func TEXT, \n"
+                 "                  interval_x TEXT, \n"
                  "                  acc REAL, \n"
                  "                  max_iter INTEGER, \n"
                  "                  print_interim INTEGER, \n"
@@ -64,7 +65,6 @@ class Select(NamedTuple):
 
     ONEDIMOPT_STEP = "SELECT step FROM onedimopt WHERE user_id = ?"
     ONEDIMOPT_TYPE = "SELECT type FROM onedimopt WHERE user_id = ?"
-    ONEDIMOPT_PRINT_INTERIM = "SELECT print_interim FROM onedimopt WHERE user_id = ?"
     ONEDIMOPT_ALL = "SELECT * FROM onedimopt WHERE user_id = ?"
 
 
@@ -87,6 +87,7 @@ class Update(NamedTuple):
     ONEDIMOPT_STEP = "UPDATE onedimopt SET step = ? WHERE user_id = ?"
     ONEDIMOPT_TYPE = "UPDATE onedimopt SET type = ? WHERE user_id = ?"
     ONEDIMOPT_FUNC = "UPDATE onedimopt SET func = ? WHERE user_id = ?"
+    ONEDIMOPT_INTERVAL_X = "UPDATE onedimopt SET interval_x = ? WHERE user_id = ?"
     ONEDIMOPT_ACC = "UPDATE onedimopt SET acc = ? WHERE user_id = ?"
     ONEDIMOPT_MAX_ITER = "UPDATE onedimopt SET max_iter = ? WHERE user_id = ?"
     ONEDIMOPT_PRINT_INTERIM = "UPDATE onedimopt SET print_interim = ? WHERE user_id = ?"
