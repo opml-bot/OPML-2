@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Optional, Callable, Any
 import numpy as np
 import pandas as pd
@@ -52,12 +54,16 @@ class Parabola:
         x2 = (self.interval_x[1] - self.interval_x[0]) * np.random.random() + self.interval_x[0]
         self.x = [self.interval_x[0], x2, self.interval_x[1]]
         self.y = [self.func(i) for i in self.x]
+        self.x_ = None
         answer = ''
         if self.save_iters_df:
             iterations_df = pd.DataFrame(columns=['x', 'y'])
 
         for i in range(self.max_iteration):
+            last_x = self.x_
             self.x_ = self.count_new_x()
+            if not self.x_:
+                answer += f'В ходе вычислений произошла ошибка на {i+1} итерации. \nПоследняя точка: {last_x}'
             self.y_ = self.func(self.x_)
             if self.print_interm:
                 answer += f"iter: {i + 1:<4d} x: {self.x_:.12f} y: {self.y_:.12f}\n"
@@ -93,6 +99,8 @@ class Parabola:
         a1 = (self.y[1] - self.y[0]) / (self.x[1] - self.x[0])
         a2 = 1 / (self.x[2] - self.x[1]) * ((self.y[2] - self.y[0]) / (self.x[2] - self.x[0]) -
                                             (self.y[1] - self.y[0]) / (self.x[1] - self.x[0]))
+        if a2 == 0:
+            return False
         x = 1 / 2 * (self.x[0] + self.x[1] - a1 / a2)
         return x
 
