@@ -78,7 +78,7 @@ class BFGS:
             if norm2(grad_f_k) < self.acc:
                 self.x_ = x_k
                 self.f_ = f_k
-                answer = answer + f"Достигнута заданная точность. \nПолученная точка: {(self.x_, self.y_)}"
+                answer = answer + f"Достигнута заданная точность. \nПолученная точка: {(self.x_, self.f_)}"
                 return answer
 
             p_k = -h_k @ grad_f_k
@@ -88,7 +88,7 @@ class BFGS:
             if alpha_k is None:
                 self.x_ = x_k
                 self.f_ = f_k
-                answer = answer + f"Константа alpha не находится. Метод не сошелся. \nПолученная точка: {(self.x_, self.y_)}"
+                answer = answer + f"Константа alpha не находится. Метод не сошелся. \nПолученная точка: {(self.x_, self.f_)}"
                 return answer
 
             x_k_plus1 = x_k + alpha_k * p_k
