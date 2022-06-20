@@ -1,6 +1,8 @@
 from typing import Optional, Callable
 import numpy as np
 import pandas as pd
+import plotly.express as px
+import plotly.graph_objects as go
 
 
 class Brandt:
@@ -28,13 +30,15 @@ class Brandt:
                  acc: Optional[float] = 10**-5,
                  max_iteration: Optional[int] = 500,
                  print_interim: Optional[bool] = False,
-                 save_iters_df: Optional[bool] = False):
+                 save_iters_df: Optional[bool] = False,
+                 draw_flag: Optional[bool] = False):
         self.func = func
         self.interval_x = interval_x
         self.acc = acc
         self.max_iteration = max_iteration
         self.print_interim = print_interim
         self.save_iters_df = save_iters_df
+        self.draw_flag = draw_flag
 
     def solve(self):
         """
@@ -53,6 +57,8 @@ class Brandt:
         t = 10**-8
         if self.save_iters_df:
             df = pd.DataFrame(columns = ['u', 'Method'])
+        if self.draw_flag:
+            draw_df = pd.DataFrame(columns=['x', 'y', 'iter', 'size', 'color'])
 
         a, b = self.interval_x
         C = (3 - 5**0.5)/2
@@ -154,6 +160,9 @@ class Brandt:
                     f2 = fu
             if self.save_iters_df:
                 df = df.append({'u': u, 'Method': method}, ignore_index=True)
+            if self.draw_flag:
+                dataa = {'x': x0, 'y': f0, 'iter': i, 'size': 10.0, 'color': 'red'}
+                draw_df = draw_df.append(dataa, ignore_index=True)
             if self.print_interim:
                 ans = ans + f'iter: {i+1:>4} x: {x0:>.10f} method: {method:^10s}\n'
         else:
@@ -162,10 +171,32 @@ class Brandt:
                 return ans, df
             return ans
         ans = ans + f"Достигнута заданная точность. \nПолученная точка: {(x0, f0)}"
+        draw_df['iter'] = draw_df['iter'].astype(int)
+        draw_df['size'] = draw_df['size'].astype(float)
         if self.save_iters_df:
-            return ans, df
+            if self.draw_flag:
+                a = self.draw(draw_df)
+                return ans, df, a
+            else:
+                return ans, df
+        elif self.draw_flag:
+            print(draw_df.dtypes)
+            a = self.draw(draw_df)
+            return ans, a
         return ans
 
+    def draw(self, df):
+        fig = px.scatter(df, x='x', y='y', animation_frame='iter',
+                         range_x=[min(df['x']) - (max(df['x']) - min(df['x'])) * 0.15,
+                                  max(df['x']) + (max(df['x']) - min(df['x'])) * 0.15],
+                        range_y=[min(df['y']) - (max(df['y']) - min(df['y'])) * 0.15,
+                                  max(df['y']) + (max(df['y']) - min(df['y'])) * 0.15],
+                         size='size', color='color')
+        func_x = np.linspace(self.interval_x[0], self.interval_x[1], 1000)
+        func_y = [self.func(i) for i in func_x]
+        fig.add_trace(go.Scatter(x=func_x, y=func_y))
+        fig.update_layout(showlegend=False)
+        return fig
 
 if __name__ == '__main__':
     func = [lambda x: -5*x**5 + 4*x**4 - 12*x**3 + 11*x**2 - 2*x + 1,
@@ -174,11 +205,11 @@ if __name__ == '__main__':
     lims = [(-0.5, 0.5), (6, 9.9), (0, 2*np.pi)]
 
     j = 0
-    x = Brandt(func[j], lims[j], max_iteration=100, acc =10**-5, save_iters_df=True)
+    x = Brandt(func[j], lims[j], max_iteration=100, acc =10**-5, save_iters_df=False, draw_flag=True)
     c = x.solve()
     desired_width = 320
 
     pd.set_option('display.width', desired_width)
     pd.set_option('display.max_columns', 12)
     print(c[0])
-    print(c[1])
+    c[1].show()
